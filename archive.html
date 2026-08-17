@@ -20,7 +20,8 @@
 
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
     .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 8px 20px rgba(11,25,52,0.06);border:1px solid rgba(20,45,72,0.04)}
-    .thumb{height:160px;background-size:cover;background-position:center}
+    .thumb{height:160px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:700;color:#333}
+    .pdf-thumb{background:#f4f7fb;color:#102b59;font-size:1.1rem}
     .meta{padding:12px}
     .meta h3{margin:0;font-size:1rem}
     .meta p{margin:6px 0 0;color:var(--muted);font-size:0.92rem}
@@ -44,62 +45,123 @@
     </header>
 
     <div class="filters">
-      <input class="search" placeholder="Search uploads (title, date, tag)..." aria-label="Search uploads">
+      <input id="searchInput" class="search" placeholder="Search uploads (title, date, tag)..." aria-label="Search uploads">
       <div class="actions"><a href="admin-upload.html">Add / Manage uploads</a></div>
     </div>
 
     <main>
-      <!-- Example static list. Replace or extend with real upload items. Add entries in reverse date order. -->
-      <div class="grid" id="archiveGrid">
-
-        <article class="card">
-          <a href="#">
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80')" aria-hidden="true"></div>
-          </a>
-          <div class="meta">
-            <h3>Newsletter — August 10, 2026</h3>
-            <p>Stories about community, science, and the environment.</p>
-            <div class="date">Aug 10, 2026</div>
-          </div>
-        </article>
-
-        <article class="card">
-          <a href="#">
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80')" aria-hidden="true"></div>
-          </a>
-          <div class="meta">
-            <h3>Newsletter — July 27, 2026</h3>
-            <p>Highlights: Young innovators and local heroes.</p>
-            <div class="date">Jul 27, 2026</div>
-          </div>
-        </article>
-
-        <article class="card">
-          <a href="#">
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=900&q=80')" aria-hidden="true"></div>
-          </a>
-          <div class="meta">
-            <h3>Newsletter — July 13, 2026</h3>
-            <p>Feature: Renewable energy and student projects.</p>
-            <div class="date">Jul 13, 2026</div>
-          </div>
-        </article>
-
-        <!-- Add more items here; ensure the newest items appear first -->
-
-      </div>
+      <div class="grid" id="archiveGrid"></div>
 
       <div class="empty" id="emptyMessage" style="display:none">No uploads found.</div>
     </main>
 
     <footer>
-      Tip: To add or update items, edit this file or use <a href="admin-upload.html">Manage uploads</a>.
+      Tip: To add or update items, use <a href="admin-upload.html">Manage uploads</a> (uploads are stored locally in your browser).
     </footer>
   </div>
 
   <script>
-    // Basic client-side sorting/filter placeholder (keeps newest first if items are added statically in that order)
-    // You can replace this with a dynamic loader later.
+    // Load uploaded files from the same localStorage key used by admin-upload.html
+    const STORAGE_KEY = 'uploadedFiles';
+    const grid = document.getElementById('archiveGrid');
+    const emptyMessage = document.getElementById('emptyMessage');
+    const searchInput = document.getElementById('searchInput');
+
+    function loadUploads() {
+      let items = [];
+      try {
+        items = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (e) {
+        items = [];
+      }
+      return items; // admin-upload uses unshift so items are newest-first
+    }
+
+    function renderUploads(filterText = '') {
+      const uploads = loadUploads();
+      const normalizedFilter = (filterText || '').toLowerCase().trim();
+
+      const filtered = uploads.filter(u => {
+        if (!normalizedFilter) return true;
+        const hay = `${u.name} ${u.uploadedAt}`.toLowerCase();
+        return hay.includes(normalizedFilter);
+      });
+
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        emptyMessage.style.display = 'block';
+        return;
+      }
+      emptyMessage.style.display = 'none';
+
+      filtered.forEach((file, idx) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const link = document.createElement('a');
+        link.href = file.data || '#';
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.title = file.name;
+        link.setAttribute('download', file.name || 'download');
+
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+
+        if (file.type === 'image/png' && file.data) {
+          thumb.style.backgroundImage = `url('${file.data}')`;
+        } else {
+          thumb.classList.add('pdf-thumb');
+          thumb.textContent = 'PDF • Open / Download';
+        }
+
+        link.appendChild(thumb);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        const title = document.createElement('h3');
+        title.textContent = file.name || 'Untitled';
+        const desc = document.createElement('p');
+        desc.textContent = file.type === 'image/png' ? 'Image upload' : 'PDF newsletter';
+        const date = document.createElement('div');
+        date.className = 'date';
+        date.textContent = file.uploadedAt || '';
+
+        meta.appendChild(title);
+        meta.appendChild(desc);
+        meta.appendChild(date);
+
+        card.appendChild(link);
+        card.appendChild(meta);
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Initial render
+    renderUploads();
+
+    // Live search
+    searchInput.addEventListener('input', (e) => {
+      renderUploads(e.target.value);
+    });
+
+    // Watch for storage events (in case admin-upload.html is open in another tab and updates localStorage)
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY) renderUploads(searchInput.value);
+    });
+
+    // Optional: observe regular polling for changes when storage events aren't available (same-tab uploads)
+    // admin-upload updates localStorage in the same tab, storage event won't fire — poll every 1s and refresh if changed
+    let lastSerialized = JSON.stringify(loadUploads());
+    setInterval(() => {
+      const current = JSON.stringify(loadUploads());
+      if (current !== lastSerialized) {
+        lastSerialized = current;
+        renderUploads(searchInput.value);
+      }
+    }, 1000);
   </script>
 </body>
 </html>
