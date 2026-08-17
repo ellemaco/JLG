@@ -212,6 +212,26 @@
         .file-list li.png:before {
             content: "🖼️";
         }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-delete-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .file-delete-btn:hover {
+            background: #b71c1c;
+        }
     </style>
 </head>
 <body>
@@ -319,21 +339,26 @@
                 return;
             }
             
-            // Add file to list
-            const fileObj = {
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                uploadedAt: new Date().toLocaleString()
+            // Read file as data URL for storage
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const fileObj = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    uploadedAt: new Date().toLocaleString(),
+                    data: event.target.result // Base64 encoded file data
+                };
+                
+                uploadedFiles.unshift(fileObj);
+                localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+                
+                showMessage(`File "${file.name}" uploaded successfully!`, 'success');
+                fileInput.value = '';
+                fileNameDisplay.classList.remove('active');
+                displayFiles();
             };
-            
-            uploadedFiles.unshift(fileObj);
-            localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-            
-            showMessage(`File "${file.name}" uploaded successfully!`, 'success');
-            fileInput.value = '';
-            fileNameDisplay.classList.remove('active');
-            displayFiles();
+            reader.readAsDataURL(file);
         });
         
         function showMessage(text, type) {
@@ -344,21 +369,39 @@
             }, 5000);
         }
         
+        function deleteFile(index) {
+            uploadedFiles.splice(index, 1);
+            localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            displayFiles();
+        }
+        
         function displayFiles() {
             if (uploadedFiles.length === 0) {
                 fileList.innerHTML = '<li>No files uploaded yet</li>';
                 return;
             }
             
-            fileList.innerHTML = uploadedFiles.map(file => {
+            fileList.innerHTML = uploadedFiles.map((file, index) => {
                 const fileType = file.type === 'application/pdf' ? 'pdf' : 'png';
                 return `<li class="${fileType}">
-                    <div>
-                        <strong>${file.name}</strong><br>
+                    <div class="file-info">
+                        <strong>${escapeHtml(file.name)}</strong><br>
                         <small>${(file.size / 1024).toFixed(2)} KB • ${file.uploadedAt}</small>
                     </div>
+                    <button type="button" class="file-delete-btn" onclick="deleteFile(${index})">🗑️ Delete</button>
                 </li>`;
             }).join('');
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
         
         // Display files on page load
