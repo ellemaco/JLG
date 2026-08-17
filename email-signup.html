@@ -114,6 +114,15 @@
             font-weight: 400;
         }
         
+        .other-input {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .other-input.show {
+            display: block;
+        }
+        
         .button-group {
             display: flex;
             gap: 15px;
@@ -329,25 +338,31 @@
                     
                     <div class="form-group">
                         <label for="grade">
-                            Grade
+                            School Level
                             <span class="optional-label">(Optional)</span>
                         </label>
                         <select id="grade" name="grade">
-                            <option value="">Select Grade</option>
-                            <option value="K">Kindergarten</option>
-                            <option value="1">1st Grade</option>
-                            <option value="2">2nd Grade</option>
-                            <option value="3">3rd Grade</option>
-                            <option value="4">4th Grade</option>
-                            <option value="5">5th Grade</option>
-                            <option value="6">6th Grade</option>
-                            <option value="7">7th Grade</option>
-                            <option value="8">8th Grade</option>
-                            <option value="9">9th Grade</option>
-                            <option value="10">10th Grade</option>
-                            <option value="11">11th Grade</option>
-                            <option value="12">12th Grade</option>
+                            <option value="">Select School Level</option>
+                            <option value="Primary">Primary School</option>
+                            <option value="Middle">Middle School</option>
+                            <option value="High">High School</option>
+                            <option value="Other">Other</option>
                         </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="other-input" id="otherInput">
+                        <label for="otherGrade">
+                            Please specify
+                            <span class="optional-label">(Optional)</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="otherGrade" 
+                            name="otherGrade" 
+                            placeholder="e.g., College, University, Homeschool, etc."
+                        >
                     </div>
                 </div>
                 
@@ -375,7 +390,20 @@
         const formContainer = document.getElementById('formContainer');
         const successMessage = document.getElementById('successMessage');
         const successName = document.getElementById('successName');
+        const gradeSelect = document.getElementById('grade');
+        const otherInput = document.getElementById('otherInput');
+        const otherGradeInput = document.getElementById('otherGrade');
         let signups = JSON.parse(localStorage.getItem('emailSignups')) || [];
+        
+        // Show/hide other input based on grade selection
+        gradeSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'Other') {
+                otherInput.classList.add('show');
+            } else {
+                otherInput.classList.remove('show');
+                otherGradeInput.value = '';
+            }
+        });
         
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -387,7 +415,13 @@
             const city = document.getElementById('city').value.trim();
             const state = document.getElementById('state').value.trim();
             const schoolName = document.getElementById('schoolName').value.trim();
-            const grade = document.getElementById('grade').value;
+            let grade = document.getElementById('grade').value;
+            const otherGrade = document.getElementById('otherGrade').value.trim();
+            
+            // If "Other" is selected, use the custom input
+            if (grade === 'Other' && otherGrade) {
+                grade = otherGrade;
+            }
             
             // Validate required fields
             if (!firstName || !lastName || !email) {
