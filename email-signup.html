@@ -366,6 +366,23 @@
                     </div>
                 </div>
                 
+                <div class="form-group">
+                    <label for="newsletter_day">
+                        When would you like to receive the weekly newsletter?
+                        <span class="optional-label">(Optional)</span>
+                    </label>
+                    <select id="newsletter_day" name="newsletter_day">
+                        <option value="">Select a day</option>
+                        <option value="Sunday">Sunday</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>
+                </div>
+                
                 <div class="message" id="message"></div>
                 
                 <div class="button-group">
@@ -417,6 +434,7 @@
             const schoolName = document.getElementById('schoolName').value.trim();
             let grade = document.getElementById('grade').value;
             const otherGrade = document.getElementById('otherGrade').value.trim();
+            const newsletterDay = document.getElementById('newsletter_day').value;
             
             // If "Other" is selected, use the custom input
             if (grade === 'Other' && otherGrade) {
@@ -450,6 +468,7 @@
                 state,
                 schoolName,
                 grade,
+                newsletterDay,
                 signupDate: new Date().toLocaleString()
             };
             
