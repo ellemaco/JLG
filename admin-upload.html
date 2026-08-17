@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin File Upload</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .file-input-label:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+        
+        .file-input-label.dragover {
+            border-color: #764ba2;
+            background: #e8eaff;
+            transform: scale(1.02);
+        }
+        
+        .file-input-label svg {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            color: #667eea;
+        }
+        
+        .upload-text {
+            text-align: left;
+        }
+        
+        .upload-text p {
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+        
+        .upload-text .main-text {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1em;
+        }
+        
+        .upload-text .sub-text {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f2ff;
+            border-radius: 5px;
+            color: #667eea;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .file-name.active {
+            display: block;
+        }
+        
+        .button {
+            background: #667eea;
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        
+        .button:hover {
+            background: #764ba2;
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .uploaded-files {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #eee;
+        }
+        
+        .uploaded-files h2 {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-list li {
+            padding: 12px;
+            background: #f8f9ff;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .file-list li:before {
+            content: "📄";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .file-list li.pdf:before {
+            content: "📕";
+        }
+        
+        .file-list li.png:before {
+            content: "🖼️";
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Admin File Upload</h1>
+    </div>
+    
+    <div class="container">
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="fileInput">Upload File</label>
+                <div class="file-input-wrapper">
+                    <label for="fileInput" class="file-input-label" id="dragDropArea">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <div class="upload-text">
+                            <p class="main-text">Click to upload or drag and drop</p>
+                            <p class="sub-text">PDF or PNG files only (max 10MB)</p>
+                        </div>
+                    </label>
+                    <input type="file" id="fileInput" accept=".pdf,.png" required>
+                    <div class="file-name" id="fileName"></div>
+                </div>
+            </div>
+            
+            <button type="submit" class="button">Upload File</button>
+            
+            <div class="message" id="message"></div>
+        </form>
+        
+        <div class="uploaded-files">
+            <h2>Uploaded Files</h2>
+            <ul class="file-list" id="fileList">
+                <li>No files uploaded yet</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dragDropArea = document.getElementById('dragDropArea');
+        const fileNameDisplay = document.getElementById('fileName');
+        const uploadForm = document.getElementById('uploadForm');
+        const messageDiv = document.getElementById('message');
+        const fileList = document.getElementById('fileList');
+        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+        
+        // Drag and drop events
+        dragDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.add('dragover');
+        });
+        
+        dragDropArea.addEventListener('dragleave', () => {
+            dragDropArea.classList.remove('dragover');
+        });
+        
+        dragDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileDisplay();
+            }
+        });
+        
+        // File input change event
+        fileInput.addEventListener('change', updateFileDisplay);
+        
+        function updateFileDisplay() {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fileNameDisplay.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                fileNameDisplay.classList.add('active');
+            } else {
+                fileNameDisplay.classList.remove('active');
+            }
+        }
+        
+        // Form submission
+        uploadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (fileInput.files.length === 0) {
+                showMessage('Please select a file', 'error');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // Validate file type
+            const validTypes = ['application/pdf', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('Invalid file type. Please upload a PDF or PNG file.', 'error');
+                return;
+            }
+            
+            // Validate file size (max 10MB)
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showMessage('File size exceeds 10MB limit.', 'error');
+                return;
+            }
+            
+            // Add file to list
+            const fileObj = {
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                uploadedAt: new Date().toLocaleString()
+            };
+            
+            uploadedFiles.unshift(fileObj);
+            localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            
+            showMessage(`File "${file.name}" uploaded successfully!`, 'success');
+            fileInput.value = '';
+            fileNameDisplay.classList.remove('active');
+            displayFiles();
+        });
+        
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 5000);
+        }
+        
+        function displayFiles() {
+            if (uploadedFiles.length === 0) {
+                fileList.innerHTML = '<li>No files uploaded yet</li>';
+                return;
+            }
+            
+            fileList.innerHTML = uploadedFiles.map(file => {
+                const fileType = file.type === 'application/pdf' ? 'pdf' : 'png';
+                return `<li class="${fileType}">
+                    <div>
+                        <strong>${file.name}</strong><br>
+                        <small>${(file.size / 1024).toFixed(2)} KB • ${file.uploadedAt}</small>
+                    </div>
+                </li>`;
+            }).join('');
+        }
+        
+        // Display files on page load
+        displayFiles();
+    </script>
+</body>
+</html>
