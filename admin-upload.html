@@ -15,22 +15,28 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f6f2ee;
             min-height: 100vh;
-            padding: 40px 20px;
         }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        h1 {
-            color: white;
-            font-size: 2.5em;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+
+        /* ── Shared nav bar ── */
+        .page-shell{max-width:1220px;margin:0 auto;padding:18px 18px 28px}
+        .topbar{background:rgba(255,255,255,0.82);border-radius:24px 24px 0 0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px 16px 18px;border-bottom:2px solid rgba(17,34,77,0.06)}
+        .brand{display:flex;align-items:center;gap:14px;min-width:220px}
+        .brand-mark-nav{width:82px;height:82px;border-radius:50%;overflow:hidden;background:white;border:3px solid rgba(30,98,201,0.08);box-shadow:0 8px 24px rgba(11,25,52,0.08);flex-shrink:0}
+        .brand-mark-nav img{width:100%;height:100%;object-fit:cover;display:block}
+        .brand-text{line-height:0.88}
+        .brand-text .name{font-size:1.1rem;font-weight:800;letter-spacing:-0.05em;color:#1d2c46}
+        .brand-text .goodness{display:block;font-size:1.85rem;letter-spacing:-0.07em}
+        .brand-text .subtitle-nav{font-size:0.54rem;text-transform:uppercase;letter-spacing:0.025em;color:#5b677a;margin-top:4px}
+        .main-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:18px 26px;font-size:0.96rem;font-weight:600;color:#1c2335;flex:1}
+        .main-nav a{text-decoration:none;color:inherit;position:relative;opacity:0.92}
+        .main-nav a.active::after{content:"";position:absolute;left:0;right:0;bottom:-12px;height:3px;border-radius:999px;background:#1a74ff}
+        .topbar-cta{background:linear-gradient(135deg,#ff4b72 0%,#f13f5c 100%);color:white;border:0;border-radius:999px;padding:12px 20px;font-weight:800;font-size:0.96rem;box-shadow:0 12px 24px rgba(255,97,131,0.28);cursor:pointer;white-space:nowrap;text-decoration:none}
+        .page-main{background:rgba(255,255,255,0.88);border-radius:0 0 28px 28px;padding:40px 40px 40px;box-shadow:0 26px 50px rgba(16,35,74,0.08)}
+
+        @media(max-width:1040px){.topbar{flex-wrap:wrap}.main-nav{order:3;width:100%;justify-content:flex-start}}
+        @media(max-width:760px){.page-shell{padding:10px 10px 22px}.topbar{padding:14px 14px 16px;border-radius:16px 16px 0 0}.brand{min-width:0}.brand-text .name{font-size:0.95rem}.brand-text .goodness{font-size:1.45rem}.main-nav{gap:12px 18px;font-size:0.82rem}.page-main{padding:24px 18px}}
         
         .container {
             background: white;
@@ -235,12 +241,28 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Admin File Upload</h1>
-    </div>
-    
-    <div class="container">
-        <form id="uploadForm">
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark-nav"><img src="logo-jlg.jpg" alt="Just a Little Goodness logo"/></div>
+          <div class="brand-text">
+            <div class="name">Just a Little <span class="goodness">GOODNESS</span></div>
+            <div class="subtitle-nav">Real Stories. Real Good. Real Impact.</div>
+          </div>
+        </div>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="#">About</a>
+          <a href="archive.html">Past Issues</a>
+          <a href="email-signup.html">Subscribe</a>
+          <a href="#">Submit</a>
+        </nav>
+        <a href="email-signup.html" class="topbar-cta" role="button">Get JLG</a>
+      </header>
+
+      <div class="page-main">
+        <div class="container">
+            <form id="uploadForm">
             <div class="form-group">
                 <label for="fileInput">Upload File</label>
                 <div class="file-input-wrapper">
@@ -269,7 +291,9 @@
                 <li>No files uploaded yet</li>
             </ul>
         </div>
-    </div>
+        </div>
+      </div><!-- /.page-main -->
+    </div><!-- /.page-shell -->
     
     <script>
         const fileInput = document.getElementById('fileInput');
