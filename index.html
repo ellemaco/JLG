@@ -22,6 +22,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: var(--page-bg);
@@ -112,9 +113,15 @@
     .main-nav a {
       position: relative;
       opacity: 0.92;
+      transition: opacity 0.18s ease, color 0.18s ease;
     }
 
-    .main-nav a.active::after {
+    .main-nav a:hover {
+      opacity: 1;
+      color: var(--blue);
+    }
+
+    .main-nav a::after {
       content: "";
       position: absolute;
       left: 0;
@@ -123,6 +130,13 @@
       height: 3px;
       border-radius: 999px;
       background: var(--blue);
+      transform: scaleX(0);
+      transition: transform 0.22s ease;
+    }
+
+    .main-nav a:hover::after,
+    .main-nav a.active::after {
+      transform: scaleX(1);
     }
 
     .topbar-cta {
@@ -134,6 +148,12 @@
       font-weight: 800;
       box-shadow: 0 12px 24px rgba(255, 97, 131, 0.28);
       cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .topbar-cta:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 18px 32px rgba(255, 75, 114, 0.38);
     }
 
     .main {
@@ -181,9 +201,10 @@
       font-weight: 800;
       padding: 18px 24px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .primary-btn:hover, .ghost-btn:hover { transform: translateY(-1px); }
+    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 20px 32px rgba(255, 82, 129, 0.32); }
+    .ghost-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(16, 43, 97, 0.10); }
 
     .primary-btn {
       background: linear-gradient(135deg, #ff4b7d 0%, #ff385f 100%);
@@ -239,6 +260,12 @@
       min-height: 180px;
       box-shadow: var(--shadow);
       border: 4px solid rgba(255,255,255,0.7);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .photo-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 32px 60px rgba(16, 35, 74, 0.14);
     }
 
     .photo-card.large {
@@ -306,6 +333,12 @@
       align-items: center;
       gap: 18px;
       box-shadow: 0 8px 20px rgba(12, 20, 48, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px rgba(12, 20, 48, 0.08);
     }
 
     .info-card .icon {
@@ -345,6 +378,12 @@
       text-align: center;
       padding: 18px;
       box-shadow: 0 12px 24px rgba(27, 49, 92, 0.07);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .balance-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 22px 40px rgba(27, 49, 92, 0.14);
     }
 
     .balance-card::before {
@@ -414,6 +453,15 @@
       color: #1b52b8;
       font-size: 1rem;
       font-weight: 800;
+      transition: color 0.18s ease, gap 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .all-link:hover {
+      color: var(--blue-deep);
+      gap: 8px;
     }
 
     .story-grid {
@@ -428,12 +476,23 @@
       border-radius: 18px;
       overflow: hidden;
       box-shadow: 0 10px 20px rgba(20,36,65,0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .story-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 36px rgba(20, 36, 65, 0.10);
     }
 
     .story-image {
       height: 180px;
       background-size: cover;
       background-position: center;
+      transition: transform 0.3s ease;
+    }
+
+    .story-card:hover .story-image {
+      transform: scale(1.04);
     }
 
     .story-body {
@@ -531,6 +590,12 @@
       padding: 16px 18px;
       font-weight: 800;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta-banner .button-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(247, 68, 101, 0.32);
     }
 
     .footer {
@@ -583,6 +648,12 @@
       place-items: center;
       font-size: 0.85rem;
       font-weight: 900;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+
+    .socials .badge:hover {
+      background: #dbe8ff;
+      transform: scale(1.15);
     }
 
     @media (max-width: 1040px) {
