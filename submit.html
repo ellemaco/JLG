@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit a Story - Just A Little Goodness</title>
+  <style>
+    :root {
+      --page-bg: #f6f2ee;
+      --steel: #1d2a3c;
+      --muted: #4e5c6c;
+      --blue: #1a74ff;
+      --blue-deep: #0d5ae4;
+      --red: #ff4d6d;
+      --green: #3ac77d;
+      --yellow: #f8d15a;
+      --orange: #ff9b52;
+      --purple: #8a63ef;
+      --card: #fff;
+      --line: rgba(20, 45, 72, 0.08);
+      --shadow: 0 26px 50px rgba(16, 35, 74, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--page-bg);
+      color: var(--steel);
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    button { font: inherit; }
+
+    .page-shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 18px 18px 28px;
+    }
+
+    .topbar {
+      background: rgba(255,255,255,0.82);
+      border-radius: 24px 24px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px 16px 18px;
+      border-bottom: 2px solid rgba(17, 34, 77, 0.06);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 300px;
+    }
+
+    .brand-mark {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: white;
+      border: 3px solid rgba(30, 98, 201, 0.08);
+      box-shadow: 0 8px 24px rgba(11, 25, 52, 0.08);
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-text {
+      line-height: 0.88;
+    }
+
+    .brand-text .name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #1d2c46;
+    }
+
+    .brand-text .goodness {
+      display: block;
+      font-size: 1.85rem;
+      letter-spacing: -0.07em;
+    }
+
+    .brand-text .subtitle {
+      font-size: 0.54rem;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: #5b677a;
+      margin-top: 4px;
+    }
+
+    .main-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px 26px;
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: #1c2335;
+      flex: 1;
+    }
+
+    .main-nav a {
+      position: relative;
+      opacity: 0.92;
+    }
+
+    .main-nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -12px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .topbar-cta {
+      background: linear-gradient(135deg, #ff4b72 0%, #f13f5c 100%);
+      color: white;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(255, 97, 131, 0.28);
+      cursor: pointer;
+    }
+
+    .main {
+      background: rgba(255,255,255,0.88);
+      border-radius: 0 0 28px 28px;
+      padding: 22px 22px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .page-header {
+      text-align: center;
+      padding: 32px 18px 24px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2.5rem, 3.5vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.08em;
+      font-weight: 900;
+      color: #1f2940;
+      margin-bottom: 14px;
+    }
+
+    .page-header p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: rgba(31, 41, 64, 0.76);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .submit-container {
+      max-width: 820px;
+      margin: 0 auto 32px;
+    }
+
+    .form-section {
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,249,255,0.96));
+      border: 2px solid rgba(18, 64, 176, 0.08);
+      border-radius: 20px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+
+    .form-section h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #1f2940;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1f2a38;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(20, 45, 72, 0.12);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--steel);
+      background: white;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    input[type="tel"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26, 116, 255, 0.1);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .category-pill {
+      appearance: none;
+      background: white;
+      border: 2px solid rgba(20, 45, 72, 0.15);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1f2a38;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-pill:hover {
+      border-color: var(--blue);
+      background: rgba(26, 116, 255, 0.05);
+    }
+
+    .category-pill:checked {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--blue);
+    }
+
+    .checkbox-item label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .hint-text {
+      font-size: 0.85rem;
+      color: #5b677a;
+      margin-top: 6px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    .submit-btn, .cancel-btn {
+      border: none;
+      border-radius: 16px;
+      font-weight: 800;
+      padding: 16px 32px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease;
+    }
+
+    .submit-btn:hover, .cancel-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #ff4b7d 0%, #ff385f 100%);
+      color: white;
+      box-shadow: 0 16px 26px rgba(255, 82, 129, 0.22);
+      min-width: 220px;
+    }
+
+    .cancel-btn {
+      background: white;
+      color: #102b61;
+      border: 2px solid rgba(16, 69, 156, 0.12);
+      min-width: 160px;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, rgba(26, 116, 255, 0.06), rgba(58, 199, 125, 0.06));
+      border-left: 4px solid var(--blue);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #1f2a38;
+    }
+
+    .info-box strong {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--blue);
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 2px solid rgba(12, 20, 42, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.05em;
+    }
+
+    .footer-brand .brand-mark {
+      width: 42px;
+      height: 42px;
+    }
+
+    .footer-center {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: #102b59;
+    }
+
+    .socials {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-weight: 700;
+      color: #243351;
+    }
+
+    .socials .badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #edf3ff;
+      display: grid;
+      place-items: center;
+      font-size: 0.85rem;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1040px) {
+      .topbar { flex-wrap: wrap; }
+      .main-nav { order: 3; width: 100%; justify-content: flex-start; }
+      .form-section { padding: 22px 24px; }
+    }
+
+    @media (max-width: 760px) {
+      .page-shell { padding: 10px 10px 22px; }
+      .topbar { padding: 14px 14px 16px; border-radius: 16px 16px 0 0; }
+      .brand { min-width: 0; }
+      .brand-text .name { font-size: 0.95rem; }
+      .brand-text .goodness { font-size: 1.45rem; }
+      .main-nav { gap: 12px 18px; font-size: 0.82rem; }
+      .main { padding: 18px 14px 12px; }
+      .page-header h1 { font-size: 2rem; }
+      .form-section { padding: 18px 16px; }
+      .form-actions { flex-direction: column; }
+      .submit-btn, .cancel-btn { min-width: auto; width: 100%; }
+      .footer { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="logo-jlg.jpg" alt="Just a Little Goodness logo" />
+        </div>
+        <div class="brand-text">
+          <div class="name">Just a Little <span class="goodness">GOODNESS</span></div>
+          <div class="subtitle">Real Stories. Real Good. Real Impact.</div>
+        </div>
+      </div>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="#">About</a>
+        <a href="archive.html">Past Issues</a>
+        <a href="email-signup.html">Subscribe</a>
+        <a href="submit.html" class="active">Submit</a>
+      </nav>
+
+      <a href="email-signup.html" class="topbar-cta" role="button">Get JLG</a>
+    </header>
+
+    <main class="main">
+      <section class="page-header">
+        <h1>Share Your Story</h1>
+        <p>Have a story about kindness, progress, perseverance, discovery, or someone making a difference? We'd love to hear it. Help us inspire young people with real good news.</p>
+      </section>
+
+      <div class="submit-container">
+        <div class="info-box">
+          <strong>✨ Why Share With Us?</strong>
+          Your story could inspire thousands of young people to see the good in the world and believe in their own power to make a difference.
+        </div>
+
+        <form>
+          <!-- Story Details Section -->
+          <div class="form-section">
+            <h2>📖 Story Details</h2>
+
+            <div class="form-group">
+              <label for="story-title">Story Title</label>
+              <input type="text" id="story-title" name="story-title" placeholder="Give your story a compelling headline" required />
+              <div class="hint-text">Make it engaging and clear about the story's focus</div>
+            </div>
+
+            <div class="form-group">
+              <label for="story-content">Your Story</label>
+              <textarea id="story-content" name="story-content" placeholder="Tell us your story. What happened? Who was involved? What was the impact?" required></textarea>
+              <div class="hint-text">Aim for 200-800 words. Be specific and vivid with details.</div>
+            </div>
+
+            <div class="form-group">
+              <label>Story Category</label>
+              <div class="category-pills">
+                <input type="radio" name="category" id="cat-people" value="people-helping-people" class="category-pill" required />
+                <label for="cat-people" style="display: inline; font-weight: 700; padding: 10px 16px; border: 2px solid rgba(20, 45, 72, 0.15); border-radius: 999px; cursor: pointer;">👥 People Helping People</label>
+
+                <input type="radio" name="category" id="cat-humans" value="amazing-humans" class="category-pill" />
+                <label for="cat-humans" style="display: inline; font-weight: 700; padding: 10px 16px; border: 2px solid rgba(20, 45, 72, 0.15); border-radius: 999px; cursor: pointer;">⭐ Amazing Humans</label>
+
+                <input type="radio" name="category" id="cat-earth" value="mother-earth" class="category-pill" />
+                <label for="cat-earth" style="display: inline; font-weight: 700; padding: 10px 16px; border: 2px solid rgba(20, 45, 72, 0.15); border-radius: 999px; cursor: pointer;">🌍 Mother Earth Wins</label>
+
+                <input type="radio" name="category" id="cat-discoveries" value="discoveries-innovations" class="category-pill" />
+                <label for="cat-discoveries" style="display: inline; font-weight: 700; padding: 10px 16px; border: 2px solid rgba(20, 45, 72, 0.15); border-radius: 999px; cursor: pointer;">🔬 Discoveries & Innovations</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="story-source">Where Did You Hear This Story?</label>
+              <input type="url" id="story-source" name="story-source" placeholder="Link to article, news source, or website (optional)" />
+              <div class="hint-text">Helps us verify and give proper credit</div>
+            </div>
+          </div>
+
+          <!-- Your Information Section -->
+          <div class="form-section">
+            <h2>👤 Your Information</h2>
+
+            <div class="form-group">
+              <label for="your-name">Your Full Name</label>
+              <input type="text" id="your-name" name="your-name" placeholder="First and last name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="your-email">Email Address</label>
+              <input type="email" id="your-email" name="your-email" placeholder="your@email.com" required />
+              <div class="hint-text">We'll use this to contact you about your submission</div>
+            </div>
+
+            <div class="form-group">
+              <label for="your-role">Your Role</label>
+              <select id="your-role" name="your-role" required>
+                <option value="">-- Select your role --</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+                <option value="journalist">Journalist/Content Creator</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="your-phone">Phone Number (Optional)</label>
+              <input type="tel" id="your-phone" name="your-phone" placeholder="+1 (555) 123-4567" />
+            </div>
+          </div>
+
+          <!-- Permissions Section -->
+          <div class="form-section">
+            <h2>✅ Permissions & Rights</h2>
+
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="perm-original" name="perm-original" required />
+                <label for="perm-original">This is an original story or I have permission to share it</label>
+              </div>
+
+              <div class="checkbox-item">
+                <input type="checkbox" id="perm-use" name="perm-use" required />
+                <label for="perm-use">JLG can use, edit, and republish this story</label>
+              </div>
+
+              <div class="checkbox-item">
+                <input type="checkbox" id="perm-email" name="perm-email" />
+                <label for="perm-email">Send me updates about JLG and featured stories</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" class="submit-btn">Share This Story</button>
+            <button type="reset" class="cancel-btn">Clear Form</button>
+          </div>
+        </form>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-brand">
+          <div class="brand-mark">
+            <img src="logo-jlg.jpg" alt="Just a Little Goodness logo" />
+          </div>
+          <span>Real stories. Real good. Real impact.</span>
+        </div>
+
+        <div class="footer-center">Just a Little Goodness</div>
+
+        <div class="socials">
+          <span>© 2025</span>
+          <span class="badge">𝕏</span>
+          <span class="badge">f</span>
+          <span class="badge">◎</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
